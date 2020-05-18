@@ -1,0 +1,33 @@
+{% extends "entries/base.html" %}
+{% block content %}
+<!-- Blog Entries Column -->
+      <div class="col-md-8 mt-4">
+        <!-- Blog Post -->
+          <a href="{% url 'home_blog' %}" >Back to home</a>{{object.images}}
+
+            <!-- <a href="/" >Back</a>  --!>
+            <div class="card mb-4 mt-4">
+              <img class="card-img-top" src="{{ MEDIA_URL }}{{object.entry_images.url}}" alt="Card image cap">
+              <div class="card-body">
+                <h2 class="card-title">{{object.entry_title}}</h2>
+                <p class="card-text">{{object.entry_text|linebreaks}}</p>
+                <form action ="{% url 'blogLike' %}" method="POST" class="ui form">
+                    {% csrf_token %}
+                    <input type="hidden" name="postId" value="{{ entries.id }}">
+                    {% if user not in entries.liked.all %}
+                      <button class="ui button positive" type="submit">Like</button>
+                    {% else %}
+                      <button class="ui button negative" type="submit">Unlike</button>
+                    {% endif %}
+                </form>
+                  <strong>{{object.liked.all.count}} likes</strong>
+              </div>
+              <div class="card-footer text-muted">
+                Posted on {{object.entry_date}} by
+                <span class= "text-info mr-2">{{object.entry_author}}</span>
+              </div>
+            </div>
+
+
+      </div>
+{% endblock %}
