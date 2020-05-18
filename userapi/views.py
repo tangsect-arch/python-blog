@@ -170,8 +170,13 @@ def like_entry(request):
 @api_view(['POST',])
 def create_user(request):
     # model = User
+    data={}
     serializer_class = registrationSerializers(data=request.data)
     if serializer_class.is_valid():
-        serializer_class.save()
-        return Response(serializer_class.data, status=status.HTTP_201_CREATED)
-    return Response(serializer_class.errors,status=status.HTTP_400_BAD_REQUEST)
+        user = serializer_class.save()
+        data['success']="User registration successful."
+        data['username']=user.username
+        data['email']=user.email
+    else:
+        data = serializer_class.errors
+    return Response(data)
