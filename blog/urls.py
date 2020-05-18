@@ -11,7 +11,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('userapi/', views.entryList.as_view()),
     path('images/', views.photoList.as_view()),
-    path('userapiList/entry/', include('userapi.urls')),
+    path('userapiList/', include('userapi.urls')),
 
 ]
 

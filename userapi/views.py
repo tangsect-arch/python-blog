@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import  status
 from entries.models import Entries, Likes, PostImages
-from .serializers import  likesSerializers, postImagesSerializers, entriesSerializers,entrySerializersData
+from .serializers import  postImagesSerializers, entriesSerializers,entrySerializersData,registrationSerializers
 from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 from rest_framework.decorators import  api_view
 
@@ -166,4 +166,12 @@ def like_entry(request):
     serializerData["entry_author"]=author
     return Response(serializerData)
 
-    
+
+@api_view(['POST',])
+def create_user(request):
+    # model = User
+    serializer_class = registrationSerializers(data=request.data)
+    if serializer_class.is_valid():
+        serializer_class.save()
+        return Response(serializer_class.data, status=status.HTTP_201_CREATED)
+    return Response(serializer_class.errors,status=status.HTTP_400_BAD_REQUEST)
