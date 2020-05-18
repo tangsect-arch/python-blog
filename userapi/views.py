@@ -122,12 +122,17 @@ def entry_list_delete_item(request,id):
 @api_view(['POST',])
 def entry_list_create_item(request):
     user = User.objects.get(pk=1)
-    model = Entries(entry_author = user)
-    serializer_class = entriesSerializers(model,data=request.data)
-    if serializer_class.is_valid():
-        serializer_class.save()
-        return Response(serializer_class.data, status=status.HTTP_201_CREATED)
-    return Response(serializer_class.errors,status=status.HTTP_400_BAD_REQUEST)
+    if user.is_superuser:
+        model = Entries(entry_author = user)
+        serializer_class = entriesSerializers(model,data=request.data)
+        if serializer_class.is_valid():
+            serializer_class.save()
+            return Response(serializer_class.data, status=status.HTTP_201_CREATED)
+        return Response(serializer_class.errors,status=status.HTTP_400_BAD_REQUEST)
+    else:
+        data={}
+        data['failure']='You are not authoraised for this operation.'
+        return Response(data)
 
 
 @api_view(['DELETE','POST',])
