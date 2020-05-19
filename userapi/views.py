@@ -1,21 +1,25 @@
 from django.shortcuts import render
 #from django.contrib.auth.models import User, Group
-from rest_framework import viewsets
-from rest_framework import permissions
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+
+from rest_framework import viewsets
+from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import  status
-from entries.models import Entries, Likes, PostImages
-from account.models import Account
-from .serializers import  postImagesSerializers, entriesSerializers,entrySerializersData,registrationSerializers
 from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 from rest_framework.decorators import  api_view, permission_classes
 from rest_framework.permissions import  IsAuthenticated
 from rest_framework.authtoken.models import  Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import ListAPIView
+from rest_framework.filters import SearchFilter, OrderingFilter
+
+from entries.models import Entries, Likes, PostImages
+from account.models import Account
+from .serializers import  postImagesSerializers, entriesSerializers,entrySerializersData,registrationSerializers
+
 
 class entryList(APIView):
     def get(self, request):
@@ -32,7 +36,8 @@ class entryPost(ListAPIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     pagination_class = PageNumberPagination
-
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ('entry_title','entry_author__username','entry_tag')
 
 
 class photoList(APIView):
