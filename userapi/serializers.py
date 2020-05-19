@@ -1,20 +1,23 @@
 from rest_framework import  serializers
 from entries.models import Entries, Likes, PostImages
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from account.models import Account
 
 
 class entriesSerializers(serializers.ModelSerializer):
-    # def get_username_from_entry_author(self,entries):
-    #     username = entries.entry_author.username
-
-
-    # username = serializers.SerializerMethodField(get_username_from_entry_author)
-    # print(username, ' username')
+    
+    author = serializers.SerializerMethodField()
+    # image = serializers.SerializerMethodField()
 
     class Meta:
         model = Entries
-        fields = ('id','entry_title','entry_text','liked','entry_date','entry_author','entry_images')
+        fields = ('id','entry_title','entry_text','liked','entry_date','entry_author','entry_images','author')
         #fields = '__all__'
+
+    def get_author(self, obj):
+        return obj.entry_author.username
+
+    
 
 
 
@@ -29,14 +32,14 @@ class postImagesSerializers(serializers.ModelSerializer):
 class registrationSerializers(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type':'password','write_only':True})
     class Meta:
-        model = User
+        model = Account
         fields = ['username','email','password','password2','first_name','last_name']
         extra_kwargs={
                     'password':{'write_only':True}
         }
 
     def save(self):
-        user = User(
+        user = Account(
                     email= self.validated_data['email'],
                     username= self.validated_data['username'],
             )

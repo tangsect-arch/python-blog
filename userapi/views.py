@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User, Group
+#from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 from django.http import HttpResponse
@@ -8,23 +8,31 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import  status
 from entries.models import Entries, Likes, PostImages
+from account.models import Account
 from .serializers import  postImagesSerializers, entriesSerializers,entrySerializersData,registrationSerializers
 from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
-from rest_framework.decorators import  api_view
+from rest_framework.decorators import  api_view, permission_classes
+from rest_framework.permissions import  IsAuthenticated
+from rest_framework.authtoken.models import  Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.generics import ListAPIView
 
 class entryList(APIView):
     def get(self, request):
         model = Entries.objects.all()
         print(model,' model')
-        serializer_class = entriesSerializers(model,many=True)
+        serializer_class = entriesSerializersData(model,many=True)
         #pagination_class = LimitOffsetPaginationcd#PageNumberPagination
         return Response(serializer_class.data)
 
 
-# class entryPost(viewsets.ModelViewSet):
-#     print('bbbbbbbbbbbbbbbbbbbb')
-#     qs =  Entries.objects.all()
-#     serializer_class = entriesSerializers(qs)
+class entryPost(ListAPIView):
+    queryset =  Entries.objects.all().order_by('id')
+    serializer_class = entriesSerializers
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    pagination_class = PageNumberPagination
+
 
 
 class photoList(APIView):
@@ -36,6 +44,7 @@ class photoList(APIView):
 
 
 @api_view(['GET',])
+@permission_classes((IsAuthenticated,))
 def entry_list_view(request):
     try:
         model = Entries.objects.all()
@@ -51,6 +60,7 @@ def entry_list_view(request):
 
 
 @api_view(['GET',])
+@permission_classes((IsAuthenticated,))
 def entry_list_view_item(request,id):
     try:
         model = Entries.objects.get(id=id)
@@ -64,32 +74,43 @@ def entry_list_view_item(request,id):
 
 
 @api_view(['GET',])
+@permission_classes((IsAuthenticated,))
 def entry_list_view_item_detail(request,id):
     try:
         model = Entries.objects.get(id=id)
-        author = model.entry_author.username
+        tags = model.entry_tag
+        relatedPosts = Entries.objects.all().filter(entry_tag=tags).exclude(id=id)
+        # author = model.entry_author.username
         postImages = PostImages.objects.all().filter(entries=id)
     except Entries.DoesNotExist:
         return Response(status = status.HTTP_404_NOT_FOUND)
     serializer = postImagesSerializers(postImages,many=True)
-    serializer_class = entrySerializersData(model)
+    serializer_class = entriesSerializers(model)
+    serializers = entriesSerializers(relatedPosts,many=True)
     # if serializer_class.is_valid():
         #pagination_class = LimitOffsetPaginationcd#PageNumberPagination
         # return Response(serializer_class.data)
     serializerData = serializer_class.data
     serializerData["images"] = serializer.data
-    serializerData["entry_author"]=author
+    serializerData["relatedPosts"] = serializers.data
+    # serializerData["entry_author"]=author
     return Response(serializerData)
 
 
 
 @api_view(['PUT',])
+@permission_classes((IsAuthenticated,))
 def entry_list_update_item(request,id):
     try:
         model = Entries.objects.get(id=id)
         
     except Entries.DoesNotExist:
         return Response(status = status.HTTP_404_NOT_FOUND)
+
+    user = request.user
+    if model.entry_author != user:
+        return Response({'response':"You are not authorised."})
+
 
     serializer_class = entriesSerializers(model,data=request.data)
     data={}
@@ -103,6 +124,7 @@ def entry_list_update_item(request,id):
 
 
 @api_view(['DELETE',])
+@permission_classes((IsAuthenticated,))
 def entry_list_delete_item(request,id):
     try:
         model = Entries.objects.get(id=id)
@@ -120,8 +142,9 @@ def entry_list_delete_item(request,id):
 
 
 @api_view(['POST',])
+@permission_classes((IsAuthenticated,))
 def entry_list_create_item(request):
-    user = User.objects.get(pk=1)
+    user = Author.objects.get(pk=1)
     if user.is_superuser:
         model = Entries(entry_author = user)
         serializer_class = entriesSerializers(model,data=request.data)
@@ -136,9 +159,10 @@ def entry_list_create_item(request):
 
 
 @api_view(['DELETE','POST',])
+@permission_classes((IsAuthenticated,))
 def like_entry(request):
     userId = request.POST.get('user')
-    user = User.objects.get(pk=userId)
+    user = Author.objects.get(pk=userId)
     postId = request.POST.get('postId')
     postObj = Entries.objects.get(id=postId)
     if user in postObj.liked.all():
@@ -182,6 +206,8 @@ def create_user(request):
         data['success']="User registration successful."
         data['username']=user.username
         data['email']=user.email
+        token = Token.objects.get(user = user).key
+        data['token']= token
     else:
         data = serializer_class.errors
     return Response(data)

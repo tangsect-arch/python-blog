@@ -41,7 +41,27 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'rest_framework',
     'userapi.apps.UserapiConfig',
+    'rest_framework.authtoken',
+    'account',
 ]
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        
+    ],
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+        
+    ],
+    'DEFAULT_PAGINATION_CLASSES':'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE':2,
+    
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -70,6 +90,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL =  'account.Account'
 
 WSGI_APPLICATION = 'blog.wsgi.application'
 

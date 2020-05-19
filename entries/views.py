@@ -48,4 +48,4 @@ def like_view(request):
 
     like.save()
 
-    return redirect('homeBlog')
+    return redirect('home_blog')
