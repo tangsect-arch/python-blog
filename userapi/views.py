@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import  status
 from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
 from rest_framework.decorators import  api_view, permission_classes
-from rest_framework.permissions import  IsAuthenticated
+from rest_framework.permissions import  IsAuthenticated,IsAdminUser
 from rest_framework.authtoken.models import  Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import ListAPIView
@@ -18,7 +18,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 
 from entries.models import Entries, Likes, PostImages
 from account.models import Account
-from .serializers import  postImagesSerializers, entriesSerializers,entrySerializersData,registrationSerializers
+from .serializers import  accountSerializers, postImagesSerializers, entriesSerializers,entrySerializersData,registrationSerializers
 
 
 class entryList(APIView):
@@ -219,3 +219,16 @@ def create_user(request):
     else:
         data = serializer_class.errors
     return Response(data)
+
+
+
+
+class allUsers(ListAPIView):
+    
+    queryset =  Account.objects.all().filter(is_superuser=False).order_by('username')
+    serializer_class = accountSerializers
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated, IsAdminUser)
+    pagination_class = PageNumberPagination
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ('username','email','id')

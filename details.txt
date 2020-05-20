@@ -45,7 +45,16 @@ delete a post
 
 like/dislike a post
     http://localhost:8000/userapiList/entry/likes/<int:id>
-        
+
+
+
+show all users(all users excluding super user)
+    http://localhost:8000/userapiList/user/all
+
+
+
+show users profile(all users excluding super user)
+    http://localhost:8000/userapiList/user/<int:id>
 
 create a new post
     http://localhost:8000/userapiList/entry/create

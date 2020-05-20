@@ -57,4 +57,10 @@ class entrySerializersData(serializers.ModelSerializer):
     class Meta:
         model = Entries
         fields = ['id','entry_title','entry_text','liked','entry_date','entry_author','entry_images']
+
+
+class accountSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['id','username','email']
         
