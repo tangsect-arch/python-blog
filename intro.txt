@@ -36,7 +36,7 @@ list a post and its related posts(with same tag)
 update a post
     http://localhost:8000/userapiList/entry/<int:id>/update
         id
-        
+
         
 
 delete a post
@@ -44,7 +44,7 @@ delete a post
         
 
 like/dislike a post
-    http://localhost:8000/userapiList/entry/likes
+    http://localhost:8000/userapiList/entry/likes/<int:id>
         
 
 create a new post
