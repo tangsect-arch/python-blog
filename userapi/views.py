@@ -106,6 +106,7 @@ def entry_list_view_item_detail(request,id):
 @api_view(['PUT',])
 @permission_classes((IsAuthenticated,))
 def entry_list_update_item(request,id):
+    print(request.data,' request.data update')
     try:
         model = Entries.objects.get(id=id)
         
@@ -113,18 +114,19 @@ def entry_list_update_item(request,id):
         return Response(status = status.HTTP_404_NOT_FOUND)
 
     user = request.user
+    print()
+    request.data['entry_author']= user.pk
     if model.entry_author != user:
         return Response({'response':"You are not authorised."})
-
-
-    serializer_class = entriesSerializers(model,data=request.data)
-    data={}
-    if serializer_class.is_valid():
-        serializer_class.save()
-        data["success"]="Updated Successfully."
-        return Response(data=data)
-    #pagination_class = LimitOffsetPaginationcd#PageNumberPagination
-    return Response(serializer_class.data)
+    else:
+        serializer_class = entriesSerializers(model,data=request.data)
+        data={}
+        if serializer_class.is_valid():
+            serializer_class.save()
+            data["success"]="Updated Successfully."
+            return Response(data=data)
+        #pagination_class = LimitOffsetPaginationcd#PageNumberPagination
+        return Response(serializer_class.errors)
 
 
 
@@ -149,7 +151,8 @@ def entry_list_delete_item(request,id):
 @api_view(['POST',])
 @permission_classes((IsAuthenticated,))
 def entry_list_create_item(request):
-    user = Author.objects.get(pk=1)
+    user = request.user
+    request.data['entry_author']=user.pk
     if user.is_superuser:
         model = Entries(entry_author = user)
         serializer_class = entriesSerializers(model,data=request.data)
@@ -165,17 +168,16 @@ def entry_list_create_item(request):
 
 @api_view(['DELETE','POST',])
 @permission_classes((IsAuthenticated,))
-def like_entry(request):
-    userId = request.POST.get('user')
-    user = Author.objects.get(pk=userId)
-    postId = request.POST.get('postId')
-    postObj = Entries.objects.get(id=postId)
+def like_entry(request,id):
+    # userId = request.user
+    user = request.user#Author.objects.get(pk=userId)
+    postObj = Entries.objects.get(id=id)
     if user in postObj.liked.all():
         postObj.liked.remove(user)
     else:
         postObj.liked.add(user)
     
-    like, created = Likes.objects.get_or_create(user=user, entries_id=postId)
+    like, created = Likes.objects.get_or_create(user=user, entries_id=id)
     if not created:
         if like.value == 'Like':
             like.value = 'Unlike'
@@ -187,17 +189,18 @@ def like_entry(request):
     try:
         model = postObj
         author = model.entry_author.username
-        postImages = PostImages.objects.all().filter(entries=postId)
+        postImages = PostImages.objects.all().filter(entries=id)
     except Entries.DoesNotExist:
         return Response(status = status.HTTP_404_NOT_FOUND)
     serializer = postImagesSerializers(postImages,many=True)
-    serializer_class = entrySerializersData(model)
+
+    serializer_class = entriesSerializers(model)
     # if serializer_class.is_valid():
         #pagination_class = LimitOffsetPaginationcd#PageNumberPagination
         # return Response(serializer_class.data)
     serializerData = serializer_class.data
     serializerData["images"] = serializer.data
-    serializerData["entry_author"]=author
+    # serializerData["entry_author"]=author
     return Response(serializerData)
 
 

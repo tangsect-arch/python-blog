@@ -1,0 +1,52 @@
+app list
+
+blog - main app
+account - user model
+entries - post model and ui
+user - user registration ui
+userapi - api sets
+
+api lists
+
+
+user registration
+    http://localhost:8000/userapiList/user/register
+        username:
+        email
+        password
+        password2
+        
+
+user login
+    http://localhost:8000/userapiList/user/login
+        username(email)
+        password
+        
+
+list all posts
+    http://localhost:8000/userapiList/list
+        page
+        search
+
+list a post and its related posts(with same tag)
+    http://localhost:8000/userapiList/entry/<int:id>/
+        id
+        
+
+update a post
+    http://localhost:8000/userapiList/entry/<int:id>/update
+        id
+        
+        
+
+delete a post
+    http://localhost:8000/userapiList/entry/<int:id>/delete
+        
+
+like/dislike a post
+    http://localhost:8000/userapiList/entry/likes
+        
+
+create a new post
+    http://localhost:8000/userapiList/entry/create
+        

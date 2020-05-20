@@ -12,7 +12,6 @@ urlpatterns = [
     path('userapi/', views.entryList.as_view()),
     path('images/', views.photoList.as_view()),
     path('userapiList/', include('userapi.urls')),
-
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
