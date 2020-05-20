@@ -11,7 +11,7 @@ class entriesSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = Entries
-        fields = ('id','entry_title','entry_text','liked','entry_date','entry_author','entry_images','author')
+        fields = ('id','entry_title','entry_text','liked','entry_date','entry_author','author','entry_tag','entry_images')
         #fields = '__all__'
 
     def get_author(self, obj):
@@ -58,7 +58,7 @@ class registrationSerializers(serializers.ModelSerializer):
 class entrySerializersData(serializers.ModelSerializer):
     class Meta:
         model = Entries
-        fields = ['id','entry_title','entry_text','liked','entry_date','entry_author','entry_images']
+        fields = ['id','entry_title','entry_text','liked','entry_date','entry_author','entry_tag','entry_images']
 
 
 class accountSerializers(serializers.ModelSerializer):

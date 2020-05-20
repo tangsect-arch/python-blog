@@ -109,12 +109,11 @@ def entry_list_update_item(request,id):
     print(request.data,' request.data update')
     try:
         model = Entries.objects.get(id=id)
-        
+        postmodel = PostImages.objects.get(entries_id = id)
     except Entries.DoesNotExist:
         return Response(status = status.HTTP_404_NOT_FOUND)
 
     user = request.user
-    print()
     request.data['entry_author']= user.pk
     if model.entry_author != user:
         return Response({'response':"You are not authorised."})
@@ -155,6 +154,7 @@ def entry_list_create_item(request):
     request.data['entry_author']=user.pk
     if user.is_superuser:
         model = Entries(entry_author = user)
+        postmodel = PostImages
         serializer_class = entriesSerializers(model,data=request.data)
         if serializer_class.is_valid():
             serializer_class.save()
@@ -232,3 +232,77 @@ class allUsers(ListAPIView):
     pagination_class = PageNumberPagination
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ('username','email','id')
+
+
+@api_view(['POST',])
+@permission_classes((IsAuthenticated,))
+def entry_list_create(request):
+    user = request.user
+    request.data['entry_author']=user.pk
+    if user.is_superuser:
+        model = Entries(entry_author = user)
+        # postmodel = PostImages
+        serializer_class = entriesSerializers(model,data=request.data)
+        if serializer_class.is_valid():
+            serializer_class.save()
+            if int(request.data['imageCount']) > 0:
+                i=0
+                while i<int(request.data['imageCount']):
+                    imgs = request.data['images'+str(i)]
+                    data1={}
+                    data1['entries']=entry
+                    data1['images']=imgs
+                    postmodel = PostImages(entries=Entries.objects.get(id=serializer_class.data['id']),images=imgs)
+                    serializer = postImagesSerializers(postmodel,data=data1)
+                    if serializer.is_valid():
+                        serializer.save()
+                    i+=1
+            return Response(serializer_class.data, status=status.HTTP_201_CREATED)
+        return Response(serializer_class.errors,status=status.HTTP_400_BAD_REQUEST)
+    else:
+        data={}
+        data['failure']='You are not authoraised for this operation.'
+        return Response(data)
+
+
+
+
+@api_view(['PUT',])
+@permission_classes((IsAuthenticated,))
+def entry_list_update(request,id):
+    print(request.data,' request.data update')
+    try:
+        model = Entries.objects.get(id=id)
+        postmodel = PostImages.objects.all().filter(entries_id = id)
+        if len(postmodel) > 0:
+            postmodel.delete()
+    except Entries.DoesNotExist:
+        return Response(status = status.HTTP_404_NOT_FOUND)
+
+    user = request.user
+    request.data['entry_author']= user.pk
+    if model.entry_author != user:
+        return Response({'response':"You are not authorised."})
+    else:
+        serializer_class = entriesSerializers(model,data=request.data)
+        data={}
+        if serializer_class.is_valid():
+            serializer_class.save()
+            if int(request.data['imageCount']) > 0:
+                i=0
+                while i<int(request.data['imageCount']):
+                    imgs = request.data['images'+str(i)]
+                    data1={}
+                    data1['entries']=id
+                    data1['images']=imgs
+                    postmodel = PostImages(entries=Entries.objects.get(id=serializer_class.data['id']),images=imgs)
+                    serializer = postImagesSerializers(postmodel,data=data1)
+                    if serializer.is_valid():
+                        serializer.save()
+                    i+=1
+            data["success"]="Updated Successfully."
+            return Response(data=data)
+        #pagination_class = LimitOffsetPaginationcd#PageNumberPagination
+        return Response(serializer_class.errors)
+
+

@@ -1,5 +1,5 @@
 from django.urls import  path, include
-from .views import allUsers,entryPost,create_user,entry_list_view_item_detail,entry_list_view,entry_list_view_item,entry_list_update_item,entry_list_delete_item,entry_list_create_item,like_entry
+from .views import entry_list_update,entry_list_create,allUsers,entryPost,create_user,entry_list_view_item_detail,entry_list_view,entry_list_view_item,entry_list_update_item,entry_list_delete_item,entry_list_create_item,like_entry
 from rest_framework import routers
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -15,4 +15,7 @@ urlpatterns = [
     path('user/register', create_user, name='user registration'),
     path('user/login', obtain_auth_token, name='user login'),
     path('user/all', allUsers.as_view(), name='all users'),
+
+    path('create/entry', entry_list_create, name='create'),
+    path('entry/<int:id>/edit', entry_list_update, name='update'),
 ]

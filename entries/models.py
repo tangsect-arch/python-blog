@@ -10,9 +10,8 @@ class Entries(models.Model):
     liked = models.ManyToManyField(Account, blank=True, default=None, related_name='liked')
     entry_date = models.DateTimeField(auto_now_add=True)
     entry_author = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='entry_author')
-    entry_images = models.ImageField(null=True, blank=True)
     entry_tag = models.CharField(max_length=50)
-
+    entry_images = models.ImageField(blank=True,default=None)
 
     class Meta:
         verbose_name_plural = 'Entry List'

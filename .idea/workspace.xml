@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1bef84cf-d065-443a-825e-e2107e5be086" name="Default Changelist" comment="" />
+    <list default="true" id="1bef84cf-d065-443a-825e-e2107e5be086" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/account/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/details.txt" beforeDir="false" afterPath="$PROJECT_DIR$/details.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entries/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/entries/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entries/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/entries/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entries/templates/entries/entry_details.html" beforeDir="false" afterPath="$PROJECT_DIR$/entries/templates/entries/entry_details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entries/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/entries/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userapi/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/userapi/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userapi/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/userapi/views.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,7 +26,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/pythonTest" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1bfaGE0U9VjGq4RAUewydu5ouWT" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -28,7 +38,7 @@
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="XHTML File" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/users/template/user" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">

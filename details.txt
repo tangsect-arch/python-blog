@@ -15,7 +15,8 @@ user registration
         email
         password
         password2
-        
+        first_name
+        last_name
 
 user login
     http://localhost:8000/userapiList/user/login
@@ -34,8 +35,14 @@ list a post and its related posts(with same tag)
         
 
 update a post
-    http://localhost:8000/userapiList/entry/<int:id>/update
-        id
+    http://localhost:8000/userapiList/entry/<int:id>/edit
+        entry_title:second try
+        entry_text:second try
+        entry_tag:new 
+        imageCount:2
+        entry_images
+        images0
+        images1
 
         
 
@@ -56,6 +63,14 @@ show all users(all users excluding super user)
 show users profile(all users excluding super user)
     http://localhost:8000/userapiList/user/<int:id>
 
+
+
 create a new post
-    http://localhost:8000/userapiList/entry/create
-        
+    http://localhost:8000/userapiList/create/entry
+        entry_title:second try
+        entry_text:second try
+        entry_tag:new 
+        imageCount:2
+        entry_images
+        images0
+        images1
